@@ -55,4 +55,22 @@ describe("ObjectTransaction", () => {
     expect(finalRollback).toBe(10);
     expect(transaction.currentState).toBe(10);
   });
+
+  it("should remove all past changes when call commit", () => {
+    const transaction = new ObjectTransaction(10);
+
+    transaction.update(state => state + 1); // 11
+    transaction.update(state => state + 1); // 12
+    transaction.update(state => state + 1); // 13
+    transaction.update(state => state + 1); // 14
+
+    transaction.commit();
+
+    transaction.rollback();
+    transaction.rollback();
+    transaction.rollback();
+    transaction.rollback();
+
+    expect(transaction.currentState).toBe(14);
+  });
 });

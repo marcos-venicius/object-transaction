@@ -39,6 +39,10 @@ export class ObjectTransaction<T> {
     }
   }
 
+  commit() {
+    this.changes = [this.state];
+  }
+
   get currentState() {
     return this.state;
   }
