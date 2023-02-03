@@ -10,7 +10,20 @@ export class ObjectTransaction<T> {
     this.changes = [state];
   }
 
-  update(updater: CallbackUpdate<T>): T {
+  /**
+   * freeze the current class state
+   * @returns a copy of the class with a freeze state
+   */
+  public freeze(): ObjectTransaction<T> {
+    return Object.assign(Object.create(Object.getPrototypeOf(this)), this);
+  }
+
+  /**
+   * update the current state
+   * @param updater a method that returns the new state
+   * @returns
+   */
+  public update(updater: CallbackUpdate<T>): ObjectTransaction<T> {
     const newState = updater(this.state);
 
     this.state = newState;
@@ -19,13 +32,17 @@ export class ObjectTransaction<T> {
     try {
       this.callback?.(newState);
     } finally {
-      return newState;
+      return this;
     }
   }
 
-  rollback(): T {
+  /**
+   * rollback the current state to the previous state
+   * @returns
+   */
+  public rollback(): ObjectTransaction<T> {
     if (this.changes.length === 1) {
-      return this.state;
+      return this;
     }
 
     this.changes.pop();
@@ -35,15 +52,21 @@ export class ObjectTransaction<T> {
     try {
       this.callback?.(this.state);
     } finally {
-      return this.state;
+      return this;
     }
   }
 
-  commit() {
+  /**
+   * commit all changes
+   * @returns
+   */
+  public commit() {
     this.changes = [this.state];
+
+    return this;
   }
 
-  get currentState() {
+  public get currentState() {
     return this.state;
   }
 }

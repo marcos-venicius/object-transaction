@@ -11,18 +11,22 @@ describe("ObjectTransaction", () => {
 
     const transaction = new ObjectTransaction({ age: 35 }, callback);
 
-    const update1 = transaction.update(state => ({
-      age: state.age + 1,
-    }));
+    const update1 = transaction
+      .update(state => ({
+        age: state.age + 1,
+      }))
+      .freeze();
 
-    const update2 = transaction.update(state => ({
-      age: state.age + 1,
-    }));
+    const update2 = transaction
+      .update(state => ({
+        age: state.age + 1,
+      }))
+      .freeze();
 
     expect(callbackCallCounts).toBe(2);
 
-    expect(update1.age).toBe(36);
-    expect(update2.age).toBe(37);
+    expect(update1.currentState.age).toBe(36);
+    expect(update2.currentState.age).toBe(37);
 
     expect(transaction.currentState.age).toBe(37);
   });
@@ -30,46 +34,44 @@ describe("ObjectTransaction", () => {
   it("should rollback to previous state", () => {
     const transaction = new ObjectTransaction(10);
 
-    transaction.update(state => state + 1); // 11
-    transaction.update(state => state + 1); // 12
+    const result = transaction
+      .update(state => state + 1) // 11
+      .update(state => state + 1) // 12
+      .rollback();
 
-    const result = transaction.rollback();
-
-    expect(result).toBe(11);
+    expect(result.currentState).toBe(11);
     expect(transaction.currentState).toBe(11);
   });
 
   it("should return initial state when not have more rollbacks", () => {
     const transaction = new ObjectTransaction(10);
 
-    transaction.update(state => state + 1); // 11
-    transaction.update(state => state + 1); // 12
+    const finalRollback = transaction
+      .update(state => state + 1) // 11
+      .update(state => state + 1) // 12
+      .rollback()
+      .rollback()
+      .rollback()
+      .rollback()
+      .rollback();
 
-    transaction.rollback();
-    transaction.rollback();
-    transaction.rollback();
-    transaction.rollback();
-
-    const finalRollback = transaction.rollback();
-
-    expect(finalRollback).toBe(10);
+    expect(finalRollback.currentState).toBe(10);
     expect(transaction.currentState).toBe(10);
   });
 
   it("should remove all past changes when call commit", () => {
     const transaction = new ObjectTransaction(10);
 
-    transaction.update(state => state + 1); // 11
-    transaction.update(state => state + 1); // 12
-    transaction.update(state => state + 1); // 13
-    transaction.update(state => state + 1); // 14
-
-    transaction.commit();
-
-    transaction.rollback();
-    transaction.rollback();
-    transaction.rollback();
-    transaction.rollback();
+    transaction
+      .update(state => state + 1) // 11
+      .update(state => state + 1) // 12
+      .update(state => state + 1) // 13
+      .update(state => state + 1) // 14
+      .commit()
+      .rollback()
+      .rollback()
+      .rollback()
+      .rollback();
 
     expect(transaction.currentState).toBe(14);
   });

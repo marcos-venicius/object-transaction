@@ -1,6 +1,6 @@
 {
   "name": "@devone/object-transaction",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "You like SQL transactions? you love object transaction",
   "main": "index.js",
   "scripts": {

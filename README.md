@@ -50,3 +50,27 @@ let stateUpdated = objectTransaction.rollback();
 
 objectTransaction.commit();
 ```
+
+and you can freeze the object return
+
+```ts
+const transaction = new ObjectTransaction(10);
+
+const state1 = transaction.update(state => state + 1).freeze();
+const state2 = transaction.update(state => state + 1).freeze();
+
+console.log(state1.currentState); // 11
+console.log(state2.currentState); // 12
+```
+
+if you not freeze the state
+
+```ts
+const transaction = new ObjectTransaction(10);
+
+const state1 = transaction.update(state => state + 1);
+const state2 = transaction.update(state => state + 1);
+
+console.log(state1.currentState); // 12
+console.log(state2.currentState); // 12
+```
