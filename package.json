@@ -2,11 +2,27 @@
   "name": "@devone/object-transaction",
   "version": "2.0.0",
   "description": "You like SQL transactions? you love object transaction",
-  "main": "index.js",
+  "engines": {
+    "node": "18.13.0"
+  },
   "scripts": {
     "test": "jest"
   },
-  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/marcos-venicius/object-transaction.git"
+  },
+  "keywords": [
+    "transaction",
+    "javascript",
+    "object-transaction",
+    "objects",
+    "state"
+  ],
+  "homepage": "https://github.com/marcos-venicius/object-transaction",
+  "bugs": {
+    "url": "https://github.com/marcos-venicius/object-transaction/issues"
+  },
   "author": {
     "email": "marcosdevelopment.business@gmail.com",
     "name": "Marcos Venicius"
