@@ -26,4 +26,33 @@ describe("ObjectTransaction", () => {
 
     expect(transaction.currentState.age).toBe(37);
   });
+
+  it("should rollback to previous state", () => {
+    const transaction = new ObjectTransaction(10);
+
+    transaction.update(state => state + 1); // 11
+    transaction.update(state => state + 1); // 12
+
+    const result = transaction.rollback();
+
+    expect(result).toBe(11);
+    expect(transaction.currentState).toBe(11);
+  });
+
+  it("should return initial state when not have more rollbacks", () => {
+    const transaction = new ObjectTransaction(10);
+
+    transaction.update(state => state + 1); // 11
+    transaction.update(state => state + 1); // 12
+
+    transaction.rollback();
+    transaction.rollback();
+    transaction.rollback();
+    transaction.rollback();
+
+    const finalRollback = transaction.rollback();
+
+    expect(finalRollback).toBe(10);
+    expect(transaction.currentState).toBe(10);
+  });
 });

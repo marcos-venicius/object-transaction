@@ -23,6 +23,22 @@ export class ObjectTransaction<T> {
     }
   }
 
+  rollback(): T {
+    if (this.changes.length === 1) {
+      return this.state;
+    }
+
+    this.changes.pop();
+
+    this.state = this.changes[this.changes.length - 1];
+
+    try {
+      this.callback?.(this.state);
+    } finally {
+      return this.state;
+    }
+  }
+
   get currentState() {
     return this.state;
   }
