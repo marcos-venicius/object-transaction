@@ -1,5 +1,11 @@
 # Object Transaction
 
+<div align="center">
+
+[![Unit Tests (Lib)](https://github.com/marcos-venicius/object-transaction/actions/workflows/unit-tests.yml/badge.svg?branch=main)](https://github.com/marcos-venicius/object-transaction/actions/workflows/unit-tests.yml)
+
+</div>
+
 Você pode criar uma transaction a partir de qualquer objeto.
 
 Ao criar essa transaction, você poderá fazer atualizações de estado, efetuar rollback e commit
